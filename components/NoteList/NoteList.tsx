@@ -1,0 +1,59 @@
+import { useMutation, useQueryClient } from '@tanstack/react-query';
+import css from "./NoteList.module.css";
+import type { Note } from '../../types/note';
+import toast from 'react-hot-toast';
+import Link from 'next/link';
+import { deleteNote } from '@/lib/api';
+
+
+
+
+interface NotesListProps {
+  notes: Note[];
+}
+export default function NoteList({ notes }: NotesListProps) {
+
+  const queryClient = useQueryClient();
+
+
+  const { mutate } = useMutation({
+    mutationFn: (id: Note['id']) => deleteNote(id),
+    onError: () => toast('Sorry, something went wrong, please try again'),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['notes'] });
+    },
+  });
+
+
+  return (
+    <ul className={css.list}>
+      {notes.map((note) => (
+        <li key={note.id} className={css.item}>
+          <div className={css.header}>
+            <h2 className={css.title}>{note.title}</h2>
+          </div>
+
+          <p className={css.content}>{note.content}</p>
+
+          <div className={css.footer}>
+            <span className={css.tag}>{note.tag}</span>
+
+            <div className={css.actions}>
+              <Link href={`/notes/${note.id}`} className={css.detailsLink}>
+                View details
+              </Link>
+
+              <button
+                type="button"
+                className={css.deleteButton}
+                onClick={() => mutate(note.id)}
+              >
+                Delete
+              </button>
+            </div>
+          </div>
+        </li>
+      ))}
+    </ul>
+  );
+}
