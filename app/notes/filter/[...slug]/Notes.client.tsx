@@ -7,13 +7,14 @@ import NoteList from "@/components/NoteList/NoteList";
 import Pagination from "@/components/Pagination/Pagination";
 import SearchBox from "@/components/SearchBox/SearchBox";
 import { fetchNotes } from "@/lib/api";
+import { NoteTag } from "@/types/note";
 import { keepPreviousData, useQuery } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
 import toast, { Toaster } from "react-hot-toast";
 import { useDebouncedCallback } from "use-debounce";
 
 interface FilterPageProps {
-  category?: string | undefined;
+  category?: NoteTag;
 }
 
 export default function FilterPageClient({ category }: FilterPageProps) {
@@ -24,13 +25,13 @@ export default function FilterPageClient({ category }: FilterPageProps) {
   const openModal = () => setIsModalOpen(true);
   const closeModal = () => setIsModalOpen(false);
   const { data, isError, isSuccess } = useQuery({
-    queryKey: ["note", query, currentPage, category],
+    queryKey: ["notes", { query, currentPage, category }],
     queryFn: () => fetchNotes({
-        page: currentPage,
-        perPage: 12,
-        search: query,
-        tag: category,
-      }),
+      page: currentPage,
+      perPage: 12,
+      search: query,
+      tag: category,
+    }),
     placeholderData: keepPreviousData,
     refetchOnMount: false,
   });
@@ -43,6 +44,8 @@ export default function FilterPageClient({ category }: FilterPageProps) {
     setQuery(query);
     setCurrentPage(1);
   }, 1000);
+
+  
   return (
     <>
       <div className={css.app}>
@@ -62,10 +65,10 @@ export default function FilterPageClient({ category }: FilterPageProps) {
           }
         </header>
 
-        <Toaster position="top-right"  />
+        <Toaster position="top-right" />
         {isSuccess && data.notes.length > 0 && <NoteList notes={data.notes} />}
         {isModalOpen && (
-          <Modal>
+          <Modal onClose={closeModal}>
             <NoteForm onClose={closeModal} />
           </Modal>
         )}

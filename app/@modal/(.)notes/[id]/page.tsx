@@ -3,7 +3,7 @@ import { fetchNoteById } from "@/lib/api";
 import NotePreview from "./NotePreview.client";
 
 type Props = {
-  params: { id: string };
+  params:Promise<{ id: string }>;
 };
 
 export default async function ModalNotePage({ params }: Props) {

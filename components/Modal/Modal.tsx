@@ -2,15 +2,21 @@
 
 import { useRouter } from 'next/navigation';
 import css from './Modal.module.css';
-import { useEffect } from 'react';
+import React, { useEffect } from 'react';
 
 
-const Modal = ({ children }: {children: React.ReactNode}) => {
-  const router = useRouter();
+
+interface ModalProps {
+  onClose: () => void;
+  children: React.ReactNode;
+}
+
+const Modal = ({ onClose, children }: ModalProps) => {
+  
   
   useEffect(() => {
     const onKeyDown = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') router.back();
+      if (e.key === 'Escape') onClose();
     };
     document.addEventListener('keydown', onKeyDown);
     document.body.style.overflow = 'hidden';
@@ -19,17 +25,17 @@ const Modal = ({ children }: {children: React.ReactNode}) => {
       document.removeEventListener('keydown', onKeyDown);
       document.body.style.overflow = '';
     };
-  }, [router]);
+  }, [onClose]);
 
   const handleBackdropClick = (e: React.MouseEvent<HTMLDivElement>) => {
-    if (e.target === e.currentTarget) router.back();
+    if (e.target === e.currentTarget) onClose();
   };
 
   return (
     <div className={css.backdrop} role="dialog" aria-modal="true" onClick={handleBackdropClick}>
       <div className={css.modal}>
         {children}
-        <button className={css.closeBtn} onClick={() => router.back()}>
+        <button className={css.closeBtn} onClick={() => onClose()}>
           Close
         </button>
       </div>

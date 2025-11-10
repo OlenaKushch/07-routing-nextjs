@@ -13,7 +13,10 @@ interface NotePreviewProps {
 }
 
 export default function NotePreview({ id }: NotePreviewProps) {
-  const router = useRouter();
+   const router = useRouter();
+  const closeModal = () => {
+    router.back();
+  };
 
   const { data: note, isLoading, isError } = useQuery<Note>({
     queryKey: ["note", id],
@@ -22,14 +25,14 @@ export default function NotePreview({ id }: NotePreviewProps) {
   });
 
   return (
-    <Modal>
+    <Modal onClose={closeModal}>
       <div className={css.container}>
         {isLoading && <p>Loading note...</p>}
         {isError && <p>Error loading note.</p>}
 
         {note && (
           <div className={css.item}>
-            <button className={css.backBtn} onClick={() => router.back()}>
+            <button className={css.backBtn} onClick={closeModal}>
               ← Back
             </button>
 

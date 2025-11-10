@@ -5,6 +5,7 @@ import {
   QueryClient,
 } from "@tanstack/react-query";
 import FilterPageClient from "./Notes.client";
+import { NoteTag } from "@/types/note";
 
 
 interface FilterPageProps {
@@ -15,17 +16,19 @@ interface FilterPageProps {
 
 export default async function FilterPage({ params }: FilterPageProps) {
   const { slug } = await params;
-  const category = slug[0] === "all" ? undefined : slug[0];
-  const query = "";
-  const currentPage = 1;
+  const filtered = slug?.[0];
+  const category: NoteTag | undefined =
+    filtered && filtered !== "all" ? (filtered as NoteTag) : undefined;
+
+ 
 
   const queryClient = new QueryClient();
 
   await queryClient.prefetchQuery({
     queryKey: ["notes", { search: "", tag: category, page: 1 }],
     queryFn: () => fetchNotes({
-        page: currentPage,
-        search: query,
+        page: 1,
+        search: '',
         perPage: 12,
         tag: category,
       }),

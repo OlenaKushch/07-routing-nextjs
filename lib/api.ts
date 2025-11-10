@@ -20,7 +20,7 @@ export type FetchNotesParams = {
   page?: number;
   perPage?: number;
   search?: string;
-  tag?: string;
+  tag?: NoteTag | 'all';
 }
 
 export const fetchNotes = async ({
@@ -49,7 +49,7 @@ export const createNote = async (newNoteData: NewNoteData): Promise<Note> => {
   return res.data;
 };
 
-export const deleteNote = async (noteId: string) => {
+export const deleteNote = async (noteId: string): Promise<Note> => {
   const res = await api.delete<Note>(`/notes/${noteId}`);
   return res.data;
 };
@@ -65,7 +65,3 @@ export type Tags = {
   createdAt: string;
   updatedAt: string;
 }
-export const getTags = async () => {
-  const res = await axios<Tags[]>('/categories');
-  return res.data;
-} 
