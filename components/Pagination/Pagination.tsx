@@ -29,7 +29,7 @@ export default function Pagination({
             marginPagesDisplayed={1}
             pageRangeDisplayed={3}
             containerClassName={css.pagination}
-            activeClassName={css.activePage}
+            activeClassName={css.active}
             previousLabel="<"
             nextLabel=">"
         />
