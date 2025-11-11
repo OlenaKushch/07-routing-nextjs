@@ -12,7 +12,7 @@ return (
       <li className={css.navigationItem}>
         <Link className={css.navigationLink} href="/">Home</Link>
       </li>
-      <li>
+      <li className={css.navigationItem}>
         <Link className={css.navigationLink} href="/notes/filter/all">Notes</Link>
       </li>
       
